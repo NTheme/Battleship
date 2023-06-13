@@ -1,0 +1,26 @@
+stages:
+  - build
+  - deliver
+
+
+Build:
+  stage: build
+  script:
+    - apt update
+    - apt install git cmake g++ libsfml-dev libxrandr-dev libxcursor-dev yasm -y
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
+    - cmake --build . --config Release -- -j 18
+    - cmake --install .
+  artifacts:
+    paths:
+      - dist/
+
+Deliver:
+  stage: deliver
+  script:
+    echo "Build succeded! Execution files saved to ./dist"
+  artifacts:
+    paths:
+      - dist/
