@@ -1,10 +1,5 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -16,6 +11,11 @@
 #include <ranges>
 #include <regex>
 #include <sfeMovie/Movie.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 #include <unordered_map>
 
 using sf::Color;
@@ -87,13 +87,35 @@ struct DrawObject;
 struct TextObject;
 struct RectObject;
 
-enum class CMDVolume { Silence, Less, More, Max };
-enum class CMDType { Close, Ficha };
-enum class ShotState { Kill, Harm, Miss, Unknown };
-enum class CellState { Alive, Harmed, Missed, Clear, Unknown, Prohibited, Killed, Chosen };
+enum class CMDVolume {
+  Silence,
+  Less,
+  More,
+  Max
+};
+enum class CMDType {
+  Close,
+  Ficha
+};
+enum class ShotState {
+  Kill,
+  Harm,
+  Miss,
+  Unknown
+};
+enum class CellState {
+  Alive,
+  Harmed,
+  Missed,
+  Clear,
+  Unknown,
+  Prohibited,
+  Killed,
+  Chosen
+};
 
 static const string kName = "BATTLESH!P!!";
-static const string kRes = "/share/battlesh1p/";
+static const string kRes = "/share/";
 static const size_t kMoveSleep = 700;
 
 namespace bs {
