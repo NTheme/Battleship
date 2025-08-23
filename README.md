@@ -12,8 +12,8 @@ How to install?
 
 You need an **SFML library**, **SFE Movie library** with all included decoders and **cmake** to build project. Find
 installation instructions on official websites.  
-_SFML version >= 2.5.1_  
-_cmake version >= 3.20_  
+_SFML version >= 3.0.0_
+_cmake version >= 3.20_
 _SFE Movie version > 1.0_
 
 ### Installation
