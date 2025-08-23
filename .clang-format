@@ -1,0 +1,21 @@
+# --========================================-- #
+#   * Author  : NTheme - All rights reserved
+#   * Created : 23 August 2025, 3:07 AM
+#   * File    : .clang-format
+#   * Project : battlesh1p
+# --========================================-- #
+
+BasedOnStyle: Google
+ColumnLimit: 128
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortLambdasOnASingleLine: None
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortCompoundRequirementOnASingleLine: false
+RequiresClausePosition: OwnLine
+SortIncludes: CaseInsensitive
+IndentRequiresClause: true
+SeparateDefinitionBlocks: Always

@@ -3,39 +3,39 @@
 #include "common.hpp"
 
 class Button {
- public:
+public:
   template <typename... Args>
-  Button(std::shared_ptr<Command> cmd, Args... obj);
+  explicit Button(std::shared_ptr<Command> cmd, Args... obj);
   virtual ~Button() = default;
 
-  virtual bool IsPressed(const Event& event) const;
-  const std::shared_ptr<Command>& GetCommand() const;
+  [[nodiscard]] virtual bool IsPressed(const Event& event) const;
+  [[nodiscard]] const std::shared_ptr<Command>& GetCommand() const;
   deque<DrawObject>& GetShapes();
 
- protected:
+protected:
   shared_ptr<Command> m_cmd;
   deque<DrawObject> m_draw;
 };
 
 class MouseButton final : public Button {
- public:
+public:
   template <typename... Args>
-  MouseButton(const Mouse::Button& btn, std::shared_ptr<Command> cmd, Args... obj);
+  MouseButton(const sf::Mouse::Button& btn, std::shared_ptr<Command> cmd, Args... obj);
 
-  bool IsPressed(const Event& event) const final;
+  [[nodiscard]] bool IsPressed(const Event& event) const override;
 
- protected:
-  Mouse::Button m_btn;
+protected:
+  sf::Mouse::Button m_btn;
 
-  bool Inside(const Vector2i& mouse) const;
+  [[nodiscard]] bool Inside(const Vector2i& mouse) const;
 };
 
 class KeyboardButton final : public Button {
- public:
+public:
   template <typename... Args>
-  KeyboardButton(std::shared_ptr<Command> cmd, Args... obj);
+  explicit KeyboardButton(std::shared_ptr<Command> cmd, Args... obj);
 
-  bool IsPressed(const Event& event) const final;
+  [[nodiscard]] bool IsPressed(const Event& event) const override;
 };
 
 template <typename... Args>
@@ -44,8 +44,8 @@ Button::Button(std::shared_ptr<Command> cmd, Args... obj) : m_cmd(std::move(cmd)
 }
 
 template <typename... Args>
-MouseButton::MouseButton(const Mouse::Button& btn, std::shared_ptr<Command> cmd, Args... obj)
-    : Button(std::move(cmd)), m_btn(btn) {
+MouseButton::MouseButton(const sf::Mouse::Button& btn, std::shared_ptr<Command> cmd, Args... obj)
+  : Button(std::move(cmd)), m_btn(btn) {
   (..., m_draw.push_back(std::move(obj)));
 }
 

@@ -7,7 +7,7 @@
 class Player {
   friend class AddCellCommand;
 
- public:
+public:
   Player(size_t index, const Vector2u& size);
   ~Player() = default;
 
@@ -22,9 +22,9 @@ class Player {
   const Ship* GetShipInProcess() const;
   size_t GetNumShips(size_t size) const;
   void LinkWithRival(Player* rival);
-  Player* GetRival();
+  Player* GetRival() const;
 
- private:
+private:
   size_t m_index;
   size_t m_ship_count;
   MyField m_field_m;

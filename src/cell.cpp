@@ -1,21 +1,31 @@
 #include "../lib/cell.hpp"
 
 Cell::Cell(const Vector2u& coord)
-    : m_coord(coord), m_ship(nullptr), m_cell_t(nullptr), m_shape(nullptr) {
+  : m_coord(coord), m_ship(nullptr), m_cell_t(nullptr), m_shape(nullptr) {
   SetState(CellState::Unknown);
 }
 
-const Vector2u& Cell::GetCoord() const { return m_coord; }
+const Vector2u& Cell::GetCoord() const {
+  return m_coord;
+}
 
-CellState Cell::GetState() const { return m_state; }
+CellState Cell::GetState() const {
+  return m_state;
+}
 
-Ship* Cell::GetShip() const { return m_ship; }
+Ship* Cell::GetShip() const {
+  return m_ship;
+}
 
-Cell* Cell::GetTwin() const { return m_cell_t; }
+Cell* Cell::GetTwin() const {
+  return m_cell_t;
+}
 
-sf::RectangleShape* Cell::GetShape() const { return m_shape; }
+sf::RectangleShape* Cell::GetShape() const {
+  return m_shape;
+}
 
-void Cell::SetState(CellState state) {
+void Cell::SetState(const CellState state) {
   m_state = state;
   if (m_shape != nullptr) {
     UpdateColor();
@@ -28,16 +38,20 @@ void Cell::SetStateExcept(CellState state, CellState except) {
   }
 };
 
-void Cell::SetShip(Ship* ship) { m_ship = ship; }
+void Cell::SetShip(Ship* ship) {
+  m_ship = ship;
+}
 
 void Cell::SetTwins(Cell* other) {
   m_cell_t = other;
   other->m_cell_t = this;
 }
 
-void Cell::SetShape(sf::RectangleShape* shape) { m_shape = shape; }
+void Cell::SetShape(RectangleShape* shape) {
+  m_shape = shape;
+}
 
-void Cell::UpdateColor() {
+void Cell::UpdateColor() const {
   switch (m_state) {
     case CellState::Alive:
       m_shape->setFillColor(Color(0, 255, 255));

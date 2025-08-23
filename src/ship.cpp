@@ -3,7 +3,7 @@
 #include "../lib/cell.hpp"
 
 Ship::Ship(const std::deque<Cell*>& chosen_cells)
-    : m_health(chosen_cells.size()), m_cells(chosen_cells) {
+  : m_health(chosen_cells.size()), m_cells(chosen_cells) {
   std::sort(m_cells.begin(), m_cells.end(), CellComparator);
 }
 
@@ -18,11 +18,17 @@ void Ship::DecrementHealth() {
   }
 }
 
-bool Ship::IsAlive() const { return m_health > 0; }
+bool Ship::IsAlive() const {
+  return m_health > 0;
+}
 
-const deque<Cell*>& Ship::GetCells() const { return m_cells; }
+const deque<Cell*>& Ship::GetCells() const {
+  return m_cells;
+}
 
-size_t Ship::GetSize() const { return m_cells.size(); }
+size_t Ship::GetSize() const {
+  return m_cells.size();
+}
 
 void Ship::AddCell(Cell* cell) {
   ++m_health;
@@ -36,14 +42,13 @@ void Ship::AddCell(Cell* cell) {
   }
 }
 
-void Ship::EraseCell(Cell* cell) {
-  auto cell_location = find(m_cells.begin(), m_cells.end(), cell);
-  if (cell_location != m_cells.end()) {
-    if (cell->GetState() != CellState::Killed && cell->GetState() != CellState::Harmed) {
+void Ship::EraseCell(Cell* cell_) {
+  if (const auto cell_location = std::ranges::find(m_cells, cell_); cell_location != m_cells.end()) {
+    if (cell_->GetState() != CellState::Killed && cell_->GetState() != CellState::Harmed) {
       --m_health;
     }
-    m_cells.erase(find(m_cells.begin(), m_cells.end(), cell));
-    cell->SetState(CellState::Clear);
+    m_cells.erase(std::ranges::find(m_cells, cell_));
+    cell_->SetState(CellState::Clear);
   }
 }
 
@@ -59,7 +64,7 @@ bool Ship::IsClassic() const {
     vertical = true;
   }
   for (size_t i = 0; i < GetSize() - 1; ++i) {
-    if ((vertical && m_cells[i + 1]->GetCoord().y == m_cells[i + 1]->GetCoord().y &&
+    if ((vertical && m_cells[i]->GetCoord().y == m_cells[i + 1]->GetCoord().y &&
          m_cells[i]->GetCoord().x + 1 == m_cells[i + 1]->GetCoord().x) ||
         (!vertical && m_cells[i]->GetCoord().x == m_cells[i + 1]->GetCoord().x &&
          m_cells[i]->GetCoord().y + 1 == m_cells[i + 1]->GetCoord().y)) {

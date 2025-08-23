@@ -5,45 +5,45 @@
 class Command {
   friend class GameLoop;
 
- public:
+public:
   Command();
-  Command(const Event::EventType& type);
+  explicit Command(MyEventType type);
   virtual ~Command() = default;
 
   virtual void Execute(bool is_remote = false) = 0;
-  const Event::EventType& GetType();
+  [[nodiscard]] MyEventType GetType() const noexcept;
 
- protected:
+protected:
   static GameLoop* m_loop;
-  Event::EventType m_type;
+  MyEventType m_type;
 };
 
 class IPBoxCommand final : public Command {
- public:
+public:
   IPBoxCommand() = default;
-  ~IPBoxCommand() final = default;
+  ~IPBoxCommand() override = default;
 
-  void Execute(bool is_remote = false);
+  void Execute(bool is_remote = false) override;
 };
 
 class PortBoxCommand final : public Command {
- public:
+public:
   PortBoxCommand() = default;
-  ~PortBoxCommand() final = default;
+  ~PortBoxCommand() override = default;
 
-  void Execute(bool is_remote = false);
+  void Execute(bool is_remote = false) override;
 };
 
 class IPClientCommand final : public Command {
- public:
+public:
   IPClientCommand() = default;
-  ~IPClientCommand() final = default;
+  ~IPClientCommand() override = default;
 
-  void Execute(bool is_remote = false);
+  void Execute(bool is_remote = false) override;
 
   static std::string m_ip_port;
 
- private:
+private:
   static std::string m_ip_addr;
   static std::string m_ip_full;
   static std::regex m_ip_regex;
@@ -52,102 +52,102 @@ class IPClientCommand final : public Command {
 };
 
 class IPServerCommand final : public Command {
- public:
+public:
   IPServerCommand() = default;
-  ~IPServerCommand() final = default;
+  ~IPServerCommand() override = default;
 
-  void Execute(bool is_remote = false);
+  void Execute(bool is_remote = false) override;
 };
 
 class PortCommand final : public Command {
- public:
+public:
   PortCommand() = default;
-  ~PortCommand() final = default;
+  ~PortCommand() override = default;
 
-  void Execute(bool is_remote = false);
+  void Execute(bool is_remote = false) override;
 
- protected:
+protected:
   static std::regex m_port_regex;
 };
 
 class DisconnectCommand final : public Command {
- public:
+public:
   DisconnectCommand() = default;
-  ~DisconnectCommand() final = default;
+  ~DisconnectCommand() override = default;
 
-  void Execute(bool is_remote = false);
+  void Execute(bool is_remote = false) override;
 };
 
 class VolumeCommand final : public Command {
- public:
-  VolumeCommand(CMDVolume type);
-  ~VolumeCommand() final = default;
+public:
+  explicit VolumeCommand(CMDVolume type);
+  ~VolumeCommand() override = default;
 
-  void Execute(bool is_remote = false);
+  void Execute(bool is_remote = false) override;
 
- private:
+private:
   CMDVolume m_type;
 };
 
 class SetSceneCommand final : public Command {
- public:
-  SetSceneCommand(const string& str);
-  ~SetSceneCommand() final = default;
+public:
+  explicit SetSceneCommand(const string& str);
+  ~SetSceneCommand() override = default;
 
-  void Execute(bool is_remote = false) final;
+  void Execute(bool is_remote = false) override;
 
- private:
+private:
   static deque<string> m_stack;
   string m_str;
 };
 
 class CellCommand : public Command {
- public:
+public:
   CellCommand(Player* player, Cell* cell);
   ~CellCommand() override = default;
-  virtual void Execute(bool is_remote = false) override = 0;
+  void Execute(bool is_remote = false) override = 0;
 
- protected:
+protected:
   Player* m_player;
   Cell* m_cell;
 
-  virtual bool IsValid() const = 0;
+  [[nodiscard]] virtual bool IsValid() const = 0;
   virtual void Send() = 0;
 };
 
 class AddCellCommand final : public CellCommand {
   friend class Player;
 
- public:
+public:
   AddCellCommand(Player* player, Cell* cell);
-  ~AddCellCommand() final = default;
-  void Execute(bool is_remote = false) final;
+  ~AddCellCommand() override = default;
+  void Execute(bool is_remote = false) override;
 
- protected:
-  bool IsValid() const final;
-  void Send() final;
+protected:
+  [[nodiscard]] bool IsValid() const override;
+  void Send() override;
 };
 
 class ShootCommand final : public CellCommand {
- public:
+public:
   ShootCommand(Player* player, Cell* cell);
-  ~ShootCommand() final = default;
-  void Execute(bool is_remote = false) final;
+  ~ShootCommand() override = default;
+  void Execute(bool is_remote = false) override;
 
- protected:
-  bool IsValid() const final;
-  void Send() final;
+protected:
+  [[nodiscard]] bool IsValid() const override;
+  void Send() override;
 };
 
-class AddShipCommand : public Command {
- public:
-  AddShipCommand(Player* player);
-  ~AddShipCommand() = default;
-  void Execute(bool is_remote = false) final;
+class AddShipCommand final : public Command {
+public:
+  explicit AddShipCommand(Player* player);
+  ~AddShipCommand() override = default;
+  void Execute(bool is_remote = false) override;
 
- protected:
+protected:
   Player* m_player;
 
-  bool IsValid() const;
+  [[nodiscard]] bool IsValid() const;
   static void Send();
 };

@@ -3,10 +3,13 @@
 #include "common.hpp"
 #include "push.hpp"
 
-class GameWindow : public sf::RenderWindow {
- public:
+class GameWindow : public RenderWindow {
+public:
   GameWindow(array<Player, 2>& players, const Vector2u& size);
-  ~GameWindow();
+  ~GameWindow() override;
+
+  void Post(std::function<void()> fn);
+  void PumpPosted();
 
   const std::shared_ptr<Command>& GetCommand();
   Push& GetButtons();
@@ -20,12 +23,15 @@ class GameWindow : public sf::RenderWindow {
   void SetVolume(CMDVolume type);
   void Ficha();
 
- private:
+private:
   View m_view;
-  Event m_event;
+  std::optional<sf::Event> m_event;
 
   Movie m_movie;
   map<string, Music> m_music;
   map<string, string> m_boxes;
   Push m_push;
+
+  std::mutex m_uiMtx;
+  std::deque<std::function<void()>> m_uiQueue;
 };

@@ -1,9 +1,11 @@
 #pragma once
 
+#include <ranges>
+
 #include "common.hpp"
 
 class Push {
- public:
+public:
   Push();
 
   template <typename Type, typename... Args>
@@ -16,7 +18,7 @@ class Push {
   void Config(array<Player, 2>& players, const Vector2u& size, const map<string, Music>& music,
               const map<string, string>& boxes);
 
- private:
+private:
   Font m_font;
   Texture m_bg;
   map<string, map<string, shared_ptr<Button>>> m_buttons;
@@ -33,10 +35,10 @@ class Push {
 };
 
 template <typename Type, typename... Args>
-void Push::Set(string scene, string obj, Args... param) {
+void Push::Set(const string scene, const string obj, Args... param) {
   if (scene == "any") {
-    for (auto& scr : m_buttons) {
-      scr.second[obj] = make_shared<Type>(param...);
+    for (auto& val : m_buttons | std::views::values) {
+      val[obj] = make_shared<Type>(param...);
     }
   } else {
     m_buttons[scene][obj] = make_shared<Type>(param...);

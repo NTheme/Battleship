@@ -3,9 +3,9 @@
 #include "common.hpp"
 
 class Ship {
- public:
+public:
   Ship() = default;
-  Ship(const deque<Cell*>& chosen_cells);
+  explicit Ship(const deque<Cell*>& chosen_cells);
   ~Ship() = default;
 
   void Clear();
@@ -17,7 +17,7 @@ class Ship {
   void EraseCell(Cell* cell_);
   bool IsClassic() const;
 
- private:
+private:
   size_t m_health = 0;
   deque<Cell*> m_cells;
 };

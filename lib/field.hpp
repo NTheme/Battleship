@@ -3,32 +3,35 @@
 #include "cell.hpp"
 #include "common.hpp"
 
-class Field {
- public:
-  Field(const Vector2u& size);
-  ~Field() = default;
-  virtual void Clear() = 0;
-  void LinkField(Field* other);
+class Field
+{
+public:
+ explicit Field(const Vector2u& size);
+ virtual ~Field() = default;
+ virtual void Clear() = 0;
+ void LinkField(Field* other);
 
-  Cell* GetCell(const Vector2u& coord);
-  void SurroundExcept(Cell* cell, CellState around, CellState except);
+ Cell* GetCell(const Vector2u& coord);
+ void SurroundExcept(Cell* cell, CellState around, CellState except);
 
- protected:
-  Vector2f m_size;
-  deque<deque<Cell>> m_cells;
+protected:
+ Vector2f m_size;
+ deque<deque<Cell>> m_cells;
 };
 
-class MyField : public Field {
- public:
-  MyField(const Vector2u& size);
-  void Clear() final;
-  void SetShip(Ship* ship);
-  void RemoveProhibited();
+class MyField final : public Field
+{
+public:
+ explicit MyField(const Vector2u& size);
+ void Clear() override;
+ void SetShip(Ship* ship);
+ void RemoveProhibited();
 };
 
-class RivalField : public Field {
- public:
-  RivalField(const Vector2u& size);
-  void Clear() final;
-  ShotState UpdateShot(Cell* cell);
+class RivalField final : public Field
+{
+public:
+ explicit RivalField(const Vector2u& size);
+ void Clear() override;
+ ShotState UpdateShot(Cell* cell);
 };

@@ -7,7 +7,7 @@
 #include "../lib/player.hpp"
 
 Push::Push() {
-  if (!m_font.loadFromFile(bs::Path() + kRes + "symbola.ttf")) {
+  if (!m_font.openFromFile(bs::Path() + kRes + "symbola.ttf")) {
     throw std::runtime_error("Cannot load m_font");
   }
   if (!m_bg.loadFromFile(bs::Path() + kRes + "background.jpg")) {
@@ -19,12 +19,14 @@ const map<string, shared_ptr<Button>>& Push::Data(const string& scene) const {
   return m_buttons.at(scene);
 }
 
-Button* Push::Get(const string& scene, const string& obj) { return m_buttons[scene][obj].get(); }
+Button* Push::Get(const string& scene, const string& obj) {
+  return m_buttons[scene][obj].get();
+}
 
 Button* Push::GetPressed(const string& scene, const Event& event) {
-  for (auto& button : m_buttons[scene]) {
-    if (button.second->IsPressed(event)) {
-      return button.second.get();
+  for (const auto& val : m_buttons[scene] | std::views::values) {
+    if (val->IsPressed(event)) {
+      return val.get();
     }
   }
   return nullptr;
@@ -42,7 +44,7 @@ void Push::Config(array<Player, 2>& players, const Vector2u& size, const map<str
 
   Set<Button>("any", "close", make_shared<SetSceneCommand>("adios"));
 
-  Set<MouseButton>("any", "return", Mouse::Left, make_shared<SetSceneCommand>("back"),
+  Set<MouseButton>("any", "return", sf::Mouse::Button::Left, make_shared<SetSceneCommand>("back"),
                    RectObject({100, 100}, {0, 255, 95}, {70, 65}),
                    TextObject("<-", 60, Color::Red, {85, 70}, m_font));
 
@@ -51,16 +53,16 @@ void Push::Config(array<Player, 2>& players, const Vector2u& size, const map<str
 }
 
 void Push::ConfigMainMenu() {
-  Set<MouseButton>("menu", "play", Mouse::Left, make_shared<SetSceneCommand>("play"),
+  Set<MouseButton>("menu", "play", sf::Mouse::Button::Left, make_shared<SetSceneCommand>("play"),
                    RectObject({340, 150}, {0, 255, 95}, {790, 300}),
                    TextObject("Play", 140, Color::Red, {820, 270}, m_font));
 
-  Set<MouseButton>("menu", "settings", Mouse::Left, make_shared<SetSceneCommand>("settings"),
+  Set<MouseButton>("menu", "settings", sf::Mouse::Button::Left, make_shared<SetSceneCommand>("settings"),
                    RectObject({530, 150}, {0, 255, 95}, {700, 820}),
                    TextObject("Settings", 140, Color::Red, {720, 790}, m_font));
 
   Set<MouseButton>(
-      "menu", "ficha", Mouse::Left, make_shared<SetSceneCommand>("ficha"),
+      "menu", "ficha", sf::Mouse::Button::Left, make_shared<SetSceneCommand>("ficha"),
       RectObject({370, 50}, {0, 255, 95}, {1550, 1030}, false),
       TextObject("By NThemeDEV & ortbor", 30, Color::Green, {1550, 990}, m_font, Text::Italic),
       TextObject("Click to learn more...", 30, Color::Green, {1550, 1030}, m_font, Text::Bold));
@@ -78,20 +80,20 @@ void Push::ConfigVolume(const map<string, Music>& music) {
               TextObject("Volume: " + bs::atos(music.at("main").getVolume()), 100, Color::Red,
                          {coord.x, coord.y}, m_font, Text::Bold));
 
-  Set<MouseButton>("settings", "vol_silence", Mouse::Left,
+  Set<MouseButton>("settings", "vol_silence", sf::Mouse::Button::Left,
                    make_shared<VolumeCommand>(CMDVolume::Silence),
                    RectObject({100, 100}, {0, 255, 95}, {coord.x + 590, coord.y + 22}),
                    TextObject("<X", 60, Color::Red, {coord.x + 592, coord.y + 32}, m_font));
 
-  Set<MouseButton>("settings", "vol_less", Mouse::Left, make_shared<VolumeCommand>(CMDVolume::Less),
+  Set<MouseButton>("settings", "vol_less", sf::Mouse::Button::Left, make_shared<VolumeCommand>(CMDVolume::Less),
                    RectObject({100, 100}, {0, 255, 95}, {coord.x + 740, coord.y + 22}),
                    TextObject("-", 60, Color::Red, {coord.x + 777, coord.y + 29}, m_font));
 
-  Set<MouseButton>("settings", "vol_more", Mouse::Left, make_shared<VolumeCommand>(CMDVolume::More),
+  Set<MouseButton>("settings", "vol_more", sf::Mouse::Button::Left, make_shared<VolumeCommand>(CMDVolume::More),
                    RectObject({100, 100}, {0, 255, 95}, {coord.x + 890, coord.y + 22}),
                    TextObject("+", 60, Color::Red, {coord.x + 918, coord.y + 27}, m_font));
 
-  Set<MouseButton>("settings", "vol_max", Mouse::Left, make_shared<VolumeCommand>(CMDVolume::Max),
+  Set<MouseButton>("settings", "vol_max", sf::Mouse::Button::Left, make_shared<VolumeCommand>(CMDVolume::Max),
                    RectObject({100, 100}, {0, 255, 95}, {coord.x + 1040, coord.y + 22}),
                    TextObject("<))", 60, Color::Red, {coord.x + 1045, coord.y + 27}, m_font));
 }
@@ -107,7 +109,7 @@ void Push::ConfigPort(const map<string, string>& boxes) {
       RectObject({120, 70}, {200, 200, 200}, {coord.x + 608, coord.y + 35}),
       TextObject(boxes.at("port"), 40, Color::Black, {coord.x + 618, coord.y + 43}, m_font));
 
-  Set<MouseButton>("settings", "port_save", Mouse::Left, make_shared<PortCommand>(),
+  Set<MouseButton>("settings", "port_save", sf::Mouse::Button::Left, make_shared<PortCommand>(),
                    RectObject({150, 70}, {0, 255, 95}, {coord.x + 297, coord.y - 65}),
                    TextObject("Save", 60, Color::Red, {coord.x + 310, coord.y - 73}, m_font));
 
@@ -119,11 +121,11 @@ void Push::ConfigPort(const map<string, string>& boxes) {
 }
 
 void Push::ConfigPlayMenu() {
-  Set<MouseButton>("play", "client", Mouse::Left, make_shared<SetSceneCommand>("client"),
+  Set<MouseButton>("play", "client", sf::Mouse::Button::Left, make_shared<SetSceneCommand>("client"),
                    RectObject({665, 150}, {0, 255, 95}, {630, 300}),
                    TextObject("Throw a glove", 100, Color::Red, {640, 300}, m_font));
 
-  Set<MouseButton>("play", "server", Mouse::Left, make_shared<IPServerCommand>(),
+  Set<MouseButton>("play", "server", sf::Mouse::Button::Left, make_shared<IPServerCommand>(),
                    RectObject({690, 150}, {0, 255, 95}, {615, 820}),
                    TextObject("Wait for a shot", 100, Color::Red, {625, 823}, m_font));
 }
@@ -133,7 +135,7 @@ void Push::ConfigClient() {
                       RectObject({500, 70}, {200, 200, 200}, {708, 445}),
                       TextObject("", 40, Color::Black, {715, 450}, m_font));
 
-  Set<MouseButton>("client", "save", Mouse::Left, make_shared<IPClientCommand>(),
+  Set<MouseButton>("client", "save", sf::Mouse::Button::Left, make_shared<IPClientCommand>(),
                    RectObject({260, 150}, {0, 255, 95}, {827, 600}),
                    TextObject("Save", 100, Color::Red, {857, 600}, m_font));
 
@@ -166,10 +168,10 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
 
         auto pos_my = Vector2u(140 + i * 70, 250 + j * 70);
         auto pos_rv = Vector2u(1080 + i * 70, 250 + j * 70);
-        Set<MouseButton>(select, "cell_m_" + cell, Mouse::Left,
+        Set<MouseButton>(select, "cell_m_" + cell, sf::Mouse::Button::Left,
                          make_shared<AddCellCommand>(players.data() + pl, cell_my),
                          RectObject({65, 65}, {255, 120, 255}, pos_my));
-        Set<MouseButton>(play, "cell_r_" + cell, Mouse::Left,
+        Set<MouseButton>(play, "cell_r_" + cell, sf::Mouse::Button::Left,
                          make_shared<ShootCommand>(players.data() + pl, cell_rv),
                          RectObject({65, 65}, {255, 255, 255}, pos_rv));
 
@@ -191,11 +193,11 @@ void Push::ConfigPlay(array<Player, 2>& players) {
     auto play = "play_" + std::to_string(pl);
     auto select = "select_" + std::to_string(pl);
 
-    Set<MouseButton>(select, "settings", Mouse::Left, make_shared<SetSceneCommand>("settings"),
+    Set<MouseButton>(select, "settings", sf::Mouse::Button::Left, make_shared<SetSceneCommand>("settings"),
                      RectObject({150, 60}, {0, 255, 95}, {1730, 75}),
                      TextObject("Settings", 40, Color::Red, {1736, 75}, m_font));
 
-    Set<MouseButton>(play, "settings", Mouse::Left, make_shared<SetSceneCommand>("settings"),
+    Set<MouseButton>(play, "settings", sf::Mouse::Button::Left, make_shared<SetSceneCommand>("settings"),
                      RectObject({150, 60}, {0, 255, 95}, {1730, 75}),
                      TextObject("Settings", 40, Color::Red, {1736, 75}, m_font));
 
@@ -222,7 +224,7 @@ void Push::ConfigPlay(array<Player, 2>& players) {
                 RectObject({40, 40}, {255, 255, 255}, {940, start + shift * 5}),
                 TextObject("Unknown", 40, Color::Red, {873, start + shift * 5 + 40}, m_font));
 
-    Set<MouseButton>(select, "ship", Mouse::Left, make_shared<AddShipCommand>(players.data() + pl),
+    Set<MouseButton>(select, "ship", sf::Mouse::Button::Left, make_shared<AddShipCommand>(players.data() + pl),
                      RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
                      TextObject("Add ship", 80, Color::Red, {1220, 530}, m_font),
                      TextObject("Select your ships", 80, Color::Blue, {1100, 300}, m_font));
